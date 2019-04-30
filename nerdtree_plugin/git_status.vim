@@ -334,7 +334,13 @@ function! s:AddHighlighting()
                 \ }
 
     for l:name in keys(l:synmap)
-        exec 'syn match ' . l:name . ' #' . escape(l:synmap[l:name], '~') . '# containedin=NERDTreeFlags'
+        if match(['NERDTreeGitStatusDirDirty', 'NERDTreeGitStatusDirClean'], l:name)
+            exec 'syn match ' . l:name . ' ".*' . escape(l:synmap[l:name], '~') . '.*" containedin=NERDTreeDir'
+        else
+            exec 'syn match ' . l:name . ' ".*' . escape(l:synmap[l:name], '~') . '.*" containedin=NERDTreeFile'
+            exec 'syn match ' . l:name . ' ".*' . escape(l:synmap[l:name], '~') . '.*" containedin=NERDTreeExecFile'
+        endif
+        " exec 'syn match ' . l:name . ' #' . escape(l:synmap[l:name], '~') . '# containedin=NERDTreeFlags'
     endfor
 
     hi def link NERDTreeGitStatusModified Special
@@ -343,7 +349,7 @@ function! s:AddHighlighting()
     hi def link NERDTreeGitStatusUnmerged Label
     hi def link NERDTreeGitStatusUntracked Comment
     hi def link NERDTreeGitStatusDirDirty Tag
-    hi def link NERDTreeGitStatusDirClean DiffAdd
+    hi def link NERDTreeGitStatusDirClean Normal
     " TODO: use diff color
     hi def link NERDTreeGitStatusIgnored DiffAdd
 endfunction
